@@ -1,0 +1,16 @@
+html, body {
+  height: 100%;
+}
+
+i.sprite {
+    background: url(kantosprites.png);
+    width: 32px;
+    height: 25px;
+    position: fixed;
+}
+
+.md-fab {
+  position: fixed !important;
+  right: 0.5rem;
+  bottom: 1rem;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "bower-bootstrap-transition",
+  "license": "MIT",
+  "version": "0.11.1",
+  "author": {
+    "name": "https://github.com/angular-ui/bootstrap/graphs/contributors"
+  },
+  "dependencies": {},
+  "main": "ui-transition-tpls.js",
+  "homepage": "https://github.com/ui-bootstrap-bower-test/bower-bootstrap-transition",
+  "_release": "0.11.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.11.1",
+    "commit": "cefcce21fd4c09763b2426df75a65dd3c0100910"
+  },
+  "_source": "https://github.com/ui-bootstrap-bower-test/bower-bootstrap-transition.git",
+  "_target": "^0.11.1",
+  "_originalSource": "bower-bootstrap-transition",
+  "_direct": true
+}
