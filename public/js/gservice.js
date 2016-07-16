@@ -24,8 +24,6 @@ angular.module('gservice', [])
       if(query && query.error) {
         console.log(query.error);
       }
-      console.log('refreshing');
-      console.log(zoom);
       // Clears the holding array of locations
       locations = [];
 
@@ -77,7 +75,7 @@ angular.module('gservice', [])
 
     // Generate markers for the centers of crowds of pokemon
     var getGeocodes = function(response, query, zoom) {
-      query = query || [{}];
+      query = query || [{display: "all"}];
       query = query.length ? query : [query];
 
       //Clear the geocodes holder
@@ -94,25 +92,51 @@ angular.module('gservice', [])
 
         // More than one pokemon has been returned, check all of them
         if(query.length) {
-          _.each(query, function (doc) {
-            if(doc.name && user.geohash && user.pokemon.toLowerCase() == doc.name.toLowerCase()) {
-              // Converts each of the JSON records into Google Maps Heatmap format (Note [Lat, Lng] format).
-              let latlon = Geohash.decode(user.geohash.substring(0, zoomDepth[zoom]));
-              let object = {
-                pokemon: user.pokemon.toLowerCase(),
-                geohash: user.geohash,
-                latlon: new google.maps.LatLng(latlon.lat, latlon.lon)
-              };
-              codes.push(object);
-            }
-          });
+          //No query, show all pokemon nearby
+          if(query[0].display == "all") {
+            // Converts each of the JSON records into Google Maps Heatmap format (Note [Lat, Lng] format).
+            let latlon = Geohash.decode(user.geohash.substring(0, zoomDepth[zoom]));
+
+            let contentString = '<strong> '+user.pokemon+'</strong> <br /><a href="#' + user.geohash + '" >Link here</a>';
+            if(user.time) contentString += '<br /> <p>Found at ' + user.time ? "daytime" : "nighttime."
+            let object = {
+              pokemon: user.pokemon.toLowerCase(),
+              geohash: user.geohash,
+              latlon: new google.maps.LatLng(latlon.lat, latlon.lon),
+              message: new google.maps.InfoWindow({
+                    content: contentString,
+                    maxWidth: 320
+                }),
+            };
+            codes.push(object);
+          } else {
+            _.each(query, function (doc) {
+              if(doc.name && user.geohash && user.pokemon.toLowerCase() == doc.name.toLowerCase()) {
+                // Converts each of the JSON records into Google Maps Heatmap format (Note [Lat, Lng] format).
+                let latlon = Geohash.decode(user.geohash.substring(0, zoomDepth[zoom]));
+                console.log(user);
+                let contentString = '<strong> '+user.pokemon+'</strong> <br /><a href="#' + user.geohash + '" >Link here</a>';
+                if(user.time) contentString += '<br /> <p>Found at ' + user.time ? "daytime" : "nighttime."
+                let object = {
+                  pokemon: user.pokemon.toLowerCase(),
+                  geohash: user.geohash,
+                  latlon: new google.maps.LatLng(latlon.lat, latlon.lon),
+                  message: new google.maps.InfoWindow({
+                        content: contentString,
+                        maxWidth: 320
+                    }),
+                };
+                codes.push(object);
+              }
+            });
+          }
+
         }
       }
       // location is now an array populated with records in Google Maps format
       _.uniqWith(codes, function (a, b) {
         return a.pokemon == b.pokemon && a.geohash == b.geohash;
       });
-      console.log(codes);
       return codes;
     };
 
@@ -132,7 +156,7 @@ angular.module('gservice', [])
           map: map,
           title: "Pokemon",
           icon: new google.maps.MarkerImage(
-            "http://localhost:3000/kantosprites.png",
+            "img/kantosprites.png",
             new google.maps.Size(32, 25),
             new google.maps.Point(point.x, point.y)
           )
@@ -186,7 +210,7 @@ angular.module('gservice', [])
 
       // Set initial location as a bouncing red marker
       var initialLocation = new google.maps.LatLng(latitude, longitude);
-      
+
       let point = {x: 0, y: 0};
       if(query) {
         let sample = query.length ? query[0] : query;
@@ -198,7 +222,7 @@ angular.module('gservice', [])
         animation: google.maps.Animation.BOUNCE,
         map: map,
         icon: new google.maps.MarkerImage(
-          "http://localhost:3000/kantosprites.png",
+          "img/kantosprites.png",
           new google.maps.Size(32, 25),
           new google.maps.Point(point.x, point.y)
         )
@@ -221,7 +245,7 @@ angular.module('gservice', [])
           animation: google.maps.Animation.BOUNCE,
           map: map,
           icon: new google.maps.MarkerImage(
-            "http://localhost:3000/kantosprites.png",
+            "img/kantosprites.png",
             new google.maps.Size(32, 25),
             new google.maps.Point(point.x, point.y)
           )
@@ -244,7 +268,6 @@ angular.module('gservice', [])
 
       // Zoom to 13 when clicking on marker
       google.maps.event.addListener(marker,'click',function() {
-        map.setZoom(13);
         map.setCenter(marker.getPosition());
       });
 
@@ -275,7 +298,6 @@ angular.module('gservice', [])
       });
     };
 
-    console.log($rootScope.zoom);
     zoom = $rootScope.zoom || 11;
     // Refresh the page upon window load. Use the initial latitude and longitude
     google.maps.event.addDomListener(window, 'load',

@@ -5,7 +5,7 @@
         <h2>Report a {{addCtrl.searchText}} Sighting</h2>
         <span flex></span>
         <md-button class="md-icon-button" ng-click="cancel()">
-          <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+          <md-icon aria-label="Menu" class="material-icons">close</md-icon>
         </md-button>
       </div>
     </md-toolbar>
@@ -16,7 +16,7 @@
       <md-radio-button value="Night">Night</md-radio-button>
       <md-radio-button value="Unknown">Unknown</md-radio-button>
     </md-radio-group>
-  
+
     <!-- Submit button. Note that its tied to createUser() function from addCtrl. Also note ng-disabled logic which prevents early submits.  -->
     <md-button type="submit" class="btn btn-danger btn-block" ng-click="answer($scope)" ng-disabled="addForm.$invalid">Report Sighting</md-button>
   </form>

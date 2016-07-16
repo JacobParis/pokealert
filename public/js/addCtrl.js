@@ -64,6 +64,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
     let ghash = Geohash.encode($scope.formData.latitude,$scope.formData.longitude, 8);
     console.log(ghash);
     // Grabs all of the text box fields
+    if(!$scope.addCtrl.searchText) return false;
+    
     var userData = {
       pokemon: $scope.addCtrl.searchText,
       time: $scope.formData.time,

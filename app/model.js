@@ -7,6 +7,7 @@ var UserSchema = new Schema({
     pokemon: {type: String, required: true},
     geohash: {type: String, required: true},
     location: {type: [Number], required: true}, // [Long, Lat]
+    time: {type: String},
     gps: {type: Boolean},
     created_at: {type: Date, default: Date.now},
     updated_at: {type: Date, default: Date.now}
