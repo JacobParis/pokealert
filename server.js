@@ -59,13 +59,15 @@ require('./app/routes.js')(app);
 //http.createServer(app).listen(port);
 //https.createServer(options, app).listen(port+1);
 //console.log('App listening on port ' + port);
-app.use(function (req, res) {
-  res.send({ success: true });
-});
 
-lex.onRequest = app;
+http.createServer(LEX.createAcmeResponder(lex, function redirectHttps(req, res) {
+    res.setHeader('Location', 'https://' + req.headers.host + req.url);
+    res.statusCode = 302;
+    res.end('<!-- Hello Developer Person! Please use HTTPS instead -->');
+  })).listen(3000);
 
-lex.listen([3000], [4430, 5001], function () {
-  var protocol = ('requestCert' in this) ? 'https': 'http';
-  console.log("Listening at " + protocol + '://localhost:' + this.address().port);
-});
+  app.use('/', function (req, res) {
+     res.end('Hello!');
+   });
+
+  https.createServer(lex.httpsOptions, LEX.createAcmeResponder(lex, app)).listen(4430);
