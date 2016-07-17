@@ -219,7 +219,7 @@ angular.module('gservice', [])
 
       let point = {x: 0, y: 0};
 
-      if(query && query.length) {
+      if(query) {
         let sample = query.length ? query[0] : query;
         point = Pokemon.nameToSprite(sample.name);
       }

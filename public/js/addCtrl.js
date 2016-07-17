@@ -185,6 +185,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
         $location.search('pokemon', pokemon);
         $location.search('loc', null);
         $scope.search();
+      } else {
+        $scope.pokemonEh = false;
       }
     }
     /**
