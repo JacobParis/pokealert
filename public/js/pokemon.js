@@ -2,10 +2,13 @@ Pokemon = {};
 
 //Convenience function
 Pokemon.nameToSprite = function (name) {
+  if(!name) return false;
   let number = Pokemon.nameToNumber(name);
   return Pokemon.numberToSprite(number);
 };
 Pokemon.numberToSprite = function (number) {
+  if(!number) return false;
+
   let columns = 11;
   let width = 32;
   let height = 25;
@@ -17,6 +20,8 @@ Pokemon.numberToSprite = function (number) {
 };
 
 Pokemon.nameToNumber = function (name) {
+  if(!name) return false;
+
   let names = Pokemon.names.map(function (pokemon) {
     return pokemon.name;
   });
