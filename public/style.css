@@ -1,16 +1,39 @@
 html, body {
   height: 100%;
 }
-
 i.sprite {
-    background: url(kantosprites.png);
-    width: 32px;
-    height: 25px;
-    position: fixed;
+  background: url(kantosprites.png);
+  width: 32px;
+  height: 25px;
+  position: fixed;
 }
-
 .md-fab {
   position: fixed !important;
   right: 0.5rem;
   bottom: 1rem;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+}
+.md-fab:before {
+  content: '';
+  width: 56px;
+  height: 25px;
+  background: white;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  /* border-top: 3px solid #999; */
+}
+.md-fab:after {
+  height: 15px;
+  width: 15px;
+  content: '';
+  background: #999;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border-radius: 50%;
+  border: 3px solid;
 }

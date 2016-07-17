@@ -2,6 +2,7 @@
 <!-- Declares PokeAlert as the starting Angular module -->
 <html class="no-js" ng-app="PokeAlert">
   <head>
+    <base href="/">
     <meta charset="utf-8">
     <title>PokeAlert :: Nearby Sightings for Go!
     </title>
@@ -41,10 +42,8 @@
   </head>
   <body ng-controller="addCtrl">
     <!-- Heading -->
-    <md-toolbar>
-      <h2>
+    <md-toolbar class="md-padding">
         <span>PokeAlert Sightings!</span>
-      </h2>
       <span flex></span>
     </md-toolbar>
 
@@ -67,7 +66,7 @@
           </md-not-found>
         </md-autocomplete>
 
-        <md-button class="md-fab" ng-click="showAdvanced($event)">Add</md-button>
+        <md-button class="md-fab md-primary" ng-click="showAdvanced($event)"></md-button>
        </form>
       </md-content>
 
