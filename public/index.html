@@ -43,41 +43,43 @@
   <body ng-controller="addCtrl">
     <!-- Heading -->
     <md-toolbar class="md-padding">
-        <span>PokeAlert Sightings!</span>
+      <span>PokeAlert Sightings!</span>
       <span flex></span>
     </md-toolbar>
 
-    <md-content class="md-padding">
-      <form name="searchForm" ng-submit="$event.preventDefault()" novalidate>
-        <md-autocomplete
-          md-selected-item="addCtrl.selectedItem"
-          md-search-text-change="addCtrl.searchTextChange(ctrl.searchText)"
-          md-search-text="addCtrl.searchText"
-          md-selected-item-change="addCtrl.selectedItemChange(item)"
-          md-items="item in addCtrl.querySearch(addCtrl.searchText)"
-          md-item-text="item.display"
-          md-min-length="0"
-          placeholder="What are you looking for?">
-          <md-item-template>
-            <span md-highlight-text="addCtrl.searchText" md-highlight-flags="^i">{{item.display}}</span>
-          </md-item-template>
-          <md-not-found>
-            No states matching "{{addCtrl.searchText}}" were found.
-          </md-not-found>
-        </md-autocomplete>
+    <main flex ui-view>
+      <md-content class="md-padding">
+        <form name="searchForm" ng-submit="$event.preventDefault()" novalidate>
+          <md-autocomplete
+            md-selected-item="addCtrl.selectedItem"
+            md-search-text-change="addCtrl.searchTextChange(ctrl.searchText)"
+            md-search-text="addCtrl.searchText"
+            md-selected-item-change="addCtrl.selectedItemChange(item)"
+            md-items="item in addCtrl.querySearch(addCtrl.searchText)"
+            md-item-text="item.display"
+            md-min-length="0"
+            placeholder="What are you looking for?">
+            <md-item-template>
+              <span md-highlight-text="addCtrl.searchText" md-highlight-flags="^i">{{item.display}}</span>
+            </md-item-template>
+            <md-not-found>
+              No states matching "{{addCtrl.searchText}}" were found.
+            </md-not-found>
+          </md-autocomplete>
 
-        <md-button class="md-fab md-primary" ng-show="pokemonEh" ng-click="showAdvanced($event)"></md-button>
-       </form>
+          <md-button class="md-fab md-primary" ng-show="pokemonEh" ng-click="showAdvanced($event)"></md-button>
+        </form>
       </md-content>
 
       <!-- Google Map -->
       <div id="map" style="width:100%; height:50vh"></div>
-
       <hr/>
-
-      <!-- Footer
-      <div class="footer">
-        <p class="text-center">©2016 Jacob Pariseau. This site is not affiliated with Nintendo, The Pokémon Company, Creatures, or GameFreak. Pokémon And All Respective Names are Trademark and © of Nintendo 1996-2016</p>
-      </div>-->
-    </body>
-  </html>
+    </main>
+    <!-- Footer-->
+    <footer class="md-accent">
+      <md-toolbar>
+        <h6 class="text-center">©2016 Jacob Pariseau. This site is not affiliated with Nintendo, The Pokémon Company, Creatures, or GameFreak. Pokémon And All Respective Names are Trademark and © of Nintendo 1996-2016</h6>
+      </md-toolbar>
+    </footer>
+  </body>
+</html>

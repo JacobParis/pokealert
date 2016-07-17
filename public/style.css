@@ -1,5 +1,15 @@
 html, body {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+footer md-toolbar {
+  padding: 8px 4rem;
+}
+
+footer md-toolbar h6 {
+  margin: 0;
 }
 i.sprite {
   background: url(kantosprites.png);
