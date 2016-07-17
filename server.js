@@ -1,13 +1,39 @@
 // DEPENDENCIES
 // -----------------------------------------------------
 var express         = require('express');
+var https           = require('https');
+var http            = require('http');
 var mongoose        = require('mongoose');
 var port            = process.env.PORT || 3000;
 var morgan          = require('morgan');
 var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
+var fs              = require('fs');
 
 var app             = express();
+
+/* Note: using staging server url, remove .testing() for production
+Using .testing() will overwrite the debug flag with true */
+var LEX = require('letsencrypt-express').testing();
+
+// Change these two lines!
+var DOMAIN = 'pokealert.com';
+var EMAIL = 'pokealert@jacobpariseau.com';
+
+var lex = LEX.create({
+  configDir: require('os').homedir() + '/letsencrypt/etc'
+, approveRegistration: function (hostname, approve) { // leave `null` to disable automatic registration
+    if (hostname === DOMAIN) { // Or check a database or list of allowed domains
+      approve(null, {
+        domains: [DOMAIN]
+      , email: EMAIL
+      , agreeTos: true
+      });
+    }
+  }
+});
+
+
 
 // Express Configuration
 // -----------------------------------------------------
@@ -30,5 +56,16 @@ require('./app/routes.js')(app);
 
 // Listen
 // -------------------------------------------------------
-app.listen(port);
-console.log('App listening on port ' + port);
+//http.createServer(app).listen(port);
+//https.createServer(options, app).listen(port+1);
+//console.log('App listening on port ' + port);
+app.use(function (req, res) {
+  res.send({ success: true });
+});
+
+lex.onRequest = app;
+
+lex.listen([80], [443, 5001], function () {
+  var protocol = ('requestCert' in this) ? 'https': 'http';
+  console.log("Listening at " + protocol + '://localhost:' + this.address().port);
+});
