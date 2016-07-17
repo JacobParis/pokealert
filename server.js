@@ -65,7 +65,7 @@ app.use(function (req, res) {
 
 lex.onRequest = app;
 
-lex.listen([80], [443, 5001], function () {
+lex.listen([3000], [443, 5001], function () {
   var protocol = ('requestCert' in this) ? 'https': 'http';
   console.log("Listening at " + protocol + '://localhost:' + this.address().port);
 });
