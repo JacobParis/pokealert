@@ -59,11 +59,13 @@ require('./app/routes.js')(app);
 //http.createServer(app).listen(port);
 //https.createServer(options, app).listen(port+1);
 //console.log('App listening on port ' + port);
+app.use(function (req, res) {
+  res.send({ success: true });
+});
 
-lex.onRequest = function (req, res) {
-  res.end('Hello, World!');
-};
+lex.onRequest = app;
 
 lex.listen([3000], [4430, 5001], function () {
-  console.log("ENCRYPT __ALL__ THE DOMAINS!");
+  var protocol = ('requestCert' in this) ? 'https': 'http';
+  console.log("Listening at " + protocol + '://localhost:' + this.address().port);
 });
