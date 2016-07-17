@@ -1,6 +1,19 @@
 // Creates the addCtrl Module and Controller. Note that it depends on the 'geolocation' module and service.
-var addCtrl = angular.module('addCtrl', ['geolocation', 'gservice', 'ngMaterial']);
-addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $mdMedia, geolocation, gservice) {
+var addCtrl = angular.module('addCtrl', ['geolocation', 'gservice', 'ngMaterial', 'ngRoute'])
+  .config(function($routeProvider, $locationProvider, $mdThemingProvider) {
+    $routeProvider
+      .when('/', {
+        templateUrl: 'index.html'
+      })
+      .otherwise({
+        redirectTo: '/'
+      });
+    $locationProvider.html5Mode(true);
+    $mdThemingProvider.theme('default')
+    .primaryPalette('red')
+    .accentPalette('cyan');
+  });
+addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $mdMedia, $location, geolocation, gservice) {
 
   // Initializes Variables
   // ----------------------------------------------------------------------------
@@ -19,29 +32,61 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
   $scope.addCtrl.searchTextChange   = searchTextChange;
 
   // Set initial coordinates to the center of the US
-  $scope.formData.latitude = 39.500;
-  $scope.formData.longitude = -98.350;
+  $scope.formData.latitude = 40;
+  $scope.formData.longitude = -100;
+
+  var resolveParams = function (pokemon, location) {
+    let params = $location.search();
+
+    let selectedPokemon = false;
+
+    if(pokemon && params.pokemon) {
+      selectedPokemon = params.pokemon;
+    }
+
+    if(location && params.loc) {
+      let latlong = Geohash.decode(params.loc);
+      let query = null;
+      if(selectedPokemon) {
+        $scope.addCtrl.searchText = selectedPokemon;
+        query = selectedPokemon ? [{name: selectedPokemon}] : null;
+      }
+      $scope.formData.latitude = latlong.lat;
+      $scope.formData.longitude = latlong.lon;
+      gservice.refresh(latlong.lat, latlong.lon, 11, query);
+    }
+
+
+
+    return params.loc;
+  };
+
+  $scope.$on('$locationChangeStart', function(event) {
+    resolveParams(true, true);
+  });
 
   // Get User's actual coordinates based on HTML5 at window load
-  geolocation.getLocation().then(function(data) {
+  if(!resolveParams(true, true)) {
+    geolocation.getLocation().then(function(data) {
 
-    // Set the latitude and longitude equal to the HTML5 coordinates
-    coords = {
-      lat: data.coords.latitude,
-      long: data.coords.longitude
-    };
+      // Set the latitude and longitude equal to the HTML5 coordinates
+      coords = {
+        lat: data.coords.latitude,
+        long: data.coords.longitude
+      };
 
-    // Display coordinates in location textboxes rounded to three decimal points
-    $scope.formData.longitude = parseFloat(coords.long).toFixed(3);
-    $scope.formData.latitude = parseFloat(coords.lat).toFixed(3);
+      // Display coordinates in location textboxes rounded to three decimal points
+      $scope.formData.longitude = parseFloat(coords.long).toFixed(3);
+      $scope.formData.latitude = parseFloat(coords.lat).toFixed(3);
 
-    // Display message confirming that the coordinates verified.
-    //$scope.formData.gps = true;
+      // Display message confirming that the coordinates verified.
+      //$scope.formData.gps = true;
 
-    gservice.refresh(parseFloat($scope.formData.latitude), parseFloat($scope.formData.longitude), 11);
+      gservice.refresh(parseFloat($scope.formData.latitude), parseFloat($scope.formData.longitude), 11);
 
 
-  });
+    });
+  }
 
   // Functions
   // ----------------------------------------------------------------------------
@@ -65,7 +110,7 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
     console.log(ghash);
     // Grabs all of the text box fields
     if(!$scope.addCtrl.searchText) return false;
-    
+
     var userData = {
       pokemon: $scope.addCtrl.searchText,
       time: $scope.formData.time,
@@ -127,8 +172,15 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
       //console.log('Text changed to ' + text);
     }
     function selectedItemChange(item) {
-      console.log('Item changed to ' + JSON.stringify(item));
-      $scope.search();
+      //console.log('Item changed to ' + JSON.stringify(item));
+      // Item was set to something other than blank
+      if(item) {
+        let pokemon = item.display;
+        $location.search('pokemon', pokemon);
+        $location.search('loc', null);
+        $scope.search();
+      }
+
     }
     /**
      * Build `states` list of key/value pairs
@@ -160,8 +212,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
         var idx = _.chain(self).map("value").indexOf(value.value).value();
         return idx === index;
       });
-
-      return a.concat(types);
+      let all = [{value: 'all pokemon', display: 'All Pokemon'}];
+      return all.concat(a.concat(types));
     }
     /**
      * Create filter function for a query string

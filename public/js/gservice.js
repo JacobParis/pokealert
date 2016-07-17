@@ -1,6 +1,7 @@
 // Creates the gservice factory. This will be the primary means by which we interact with Google Maps
 angular.module('gservice', [])
-  .factory('gservice', function($rootScope, $http) {
+
+  .factory('gservice', function($rootScope, $http, $location) {
 
     // Initialize Variables
     // -------------------------------------------------------------
@@ -13,8 +14,8 @@ angular.module('gservice', [])
     var locations = [];
 
     // Selected Location (initialize to center of America)
-    var selectedLat = 39.50;
-    var selectedLong = -98.35;
+    var selectedLat = 40;
+    var selectedLong = -100;
 
 
     // Functions
@@ -75,12 +76,16 @@ angular.module('gservice', [])
 
     // Generate markers for the centers of crowds of pokemon
     var getGeocodes = function(response, query, zoom) {
-      query = query || [{display: "all"}];
-      query = query.length ? query : [query];
+      //Handle null and empty array
+      if(!query || (query && query.length == 0)) {
+        query = [{value: "all pokemon"}];
+      } else if (query && !query.length) {
+        query = [query];
+      }
 
       //Clear the geocodes holder
       var codes = [];
-      zoom = zoom || 11;
+      zoom = zoom || 3;
       zoomDepth = [4,4,4,4,4,4,4,6,6,6,6,6,8,8,8,8,8,8,8,8];
 
       // Loop through the JSON
@@ -91,13 +96,14 @@ angular.module('gservice', [])
         if(query.error) continue;
 
         // More than one pokemon has been returned, check all of them
+
         if(query.length) {
           //No query, show all pokemon nearby
-          if(query[0].display == "all") {
+          if(query[0].value == "all pokemon") {
             // Converts each of the JSON records into Google Maps Heatmap format (Note [Lat, Lng] format).
             let latlon = Geohash.decode(user.geohash.substring(0, zoomDepth[zoom]));
 
-            let contentString = '<strong> '+user.pokemon+'</strong> <br /><a href="#' + user.geohash + '" >Link here</a>';
+            let contentString = '<strong> '+user.pokemon+'</strong> <br /><a href="/?pokemon=' +user.pokemon+'&loc='+ user.geohash + '" >Link here</a>';
             if(user.time) contentString += '<br /> <p>Found at ' + user.time ? "daytime" : "nighttime."
             let object = {
               pokemon: user.pokemon.toLowerCase(),
@@ -114,8 +120,8 @@ angular.module('gservice', [])
               if(doc.name && user.geohash && user.pokemon.toLowerCase() == doc.name.toLowerCase()) {
                 // Converts each of the JSON records into Google Maps Heatmap format (Note [Lat, Lng] format).
                 let latlon = Geohash.decode(user.geohash.substring(0, zoomDepth[zoom]));
-                console.log(user);
-                let contentString = '<strong> '+user.pokemon+'</strong> <br /><a href="#' + user.geohash + '" >Link here</a>';
+
+                let contentString = '<strong> '+user.pokemon+'</strong> <br /><a href="/?pokemon=' +user.pokemon+'&loc='+ user.geohash + '" >Link here</a>';
                 if(user.time) contentString += '<br /> <p>Found at ' + user.time ? "daytime" : "nighttime."
                 let object = {
                   pokemon: user.pokemon.toLowerCase(),
@@ -187,7 +193,7 @@ angular.module('gservice', [])
         lng: selectedLong
       };
 
-      zoom = zoom || 11;
+      zoom = zoom || 6;
       // If map has not been created already...
       if (!map) {
 
@@ -212,7 +218,8 @@ angular.module('gservice', [])
       var initialLocation = new google.maps.LatLng(latitude, longitude);
 
       let point = {x: 0, y: 0};
-      if(query) {
+
+      if(query && query.length) {
         let sample = query.length ? query[0] : query;
         point = Pokemon.nameToSprite(sample.name);
       }
@@ -298,7 +305,7 @@ angular.module('gservice', [])
       });
     };
 
-    zoom = $rootScope.zoom || 11;
+    zoom = $rootScope.zoom || 3;
     // Refresh the page upon window load. Use the initial latitude and longitude
     google.maps.event.addDomListener(window, 'load',
       googleMapService.refresh(selectedLat, selectedLong, zoom));
