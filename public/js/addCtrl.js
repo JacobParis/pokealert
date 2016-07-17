@@ -42,6 +42,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
 
     if(pokemon && params.pokemon) {
       selectedPokemon = params.pokemon;
+      console.log('params');
+      $scope.pokemonEh = !!_.find(Pokemon.names, {name: params.pokemon.toLowerCase()});
     }
 
     if(location && params.loc) {
@@ -63,7 +65,7 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
 
   $scope.$on('$locationChangeStart', function(event) {
     let params = $location.search();
-    if(params.loc.length !== 10) resolveParams(true, true);
+    if(!params.loc || params.loc.length !== 10) resolveParams(true, true);
   });
 
   // Get User's actual coordinates based on HTML5 at window load
@@ -179,11 +181,11 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
       // Item was set to something other than blank
       if(item) {
         let pokemon = item.display;
+
         $location.search('pokemon', pokemon);
         $location.search('loc', null);
         $scope.search();
       }
-
     }
     /**
      * Build `states` list of key/value pairs
