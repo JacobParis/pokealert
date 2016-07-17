@@ -38,7 +38,7 @@ var lex = LEX.create({
 // Express Configuration
 // -----------------------------------------------------
 // Sets the connection to MongoDB
-mongoose.connect("mongodb://localhost/PokeAlert?authMode=scram-sha1");
+mongoose.connect("mongodb://bellatrix:helenabonhamcarter@ec2-52-42-119-121.us-west-2.compute.amazonaws.com:27017/pokealert1");
 
 // Logging and Parsing
 app.use(express.static(__dirname + '/public'));                 // sets the static files location to public
