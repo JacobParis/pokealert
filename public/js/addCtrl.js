@@ -11,7 +11,7 @@ var addCtrl = angular.module('addCtrl', ['geolocation', 'gservice', 'ngMaterial'
     $locationProvider.html5Mode(true);
     $mdThemingProvider.theme('default')
     .primaryPalette('red')
-    .accentPalette('cyan');
+    .accentPalette('blue');
   });
 addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $mdMedia, $location, geolocation, gservice) {
 
