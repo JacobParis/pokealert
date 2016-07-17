@@ -1,7 +1,7 @@
 // Creates the gservice factory. This will be the primary means by which we interact with Google Maps
 angular.module('gservice', [])
 
-  .factory('gservice', function($rootScope, $https, $location) {
+  .factory('gservice', function($rootScope, $http, $location) {
 
     // Initialize Variables
     // -------------------------------------------------------------
@@ -41,7 +41,7 @@ angular.module('gservice', [])
         // Then initialize the map.
         initialize(latitude, longitude, zoom, query);
 
-      }).error(function() {});
+      }).error(function(error) {throw error;});
     };
 
     // Private Inner Functions

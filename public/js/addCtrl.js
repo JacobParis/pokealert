@@ -13,7 +13,7 @@ var addCtrl = angular.module('addCtrl', ['geolocation', 'gservice', 'ngMaterial'
     .primaryPalette('red')
     .accentPalette('blue');
   });
-addCtrl.controller('addCtrl', function($scope, $https, $rootScope, $mdDialog, $mdMedia, $location, geolocation, gservice) {
+addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $mdMedia, $location, geolocation, gservice) {
 
   // Initializes Variables
   // ----------------------------------------------------------------------------
