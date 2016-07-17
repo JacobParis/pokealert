@@ -62,7 +62,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
   };
 
   $scope.$on('$locationChangeStart', function(event) {
-    resolveParams(true, true);
+    let params = $location.search();
+    if(params.loc.length !== 10) resolveParams(true, true);
   });
 
   // Get User's actual coordinates based on HTML5 at window load
@@ -98,6 +99,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, $mdDialog, $md
     $scope.$apply(function() {
       $scope.formData.latitude = parseFloat(gservice.clickLat).toFixed(3);
       $scope.formData.longitude = parseFloat(gservice.clickLong).toFixed(3);
+      let ghash = Geohash.encode($scope.formData.latitude,$scope.formData.longitude, 10);
+      $location.search('loc', ghash);
       //$scope.formData.gps = false;
     });
   });
