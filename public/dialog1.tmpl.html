@@ -10,12 +10,15 @@
       </div>
     </md-toolbar>
 
+    <md-layout class="md-padding">
     <!-- Text Boxes and Other User Inputs. Note ng-model binds the values to Angular $scope -->
     <md-radio-group ng-model="formData.time">
       <md-radio-button value="Day" class="md-primary">Day</md-radio-button>
       <md-radio-button value="Night">Night</md-radio-button>
       <md-radio-button value="Unknown">Unknown</md-radio-button>
     </md-radio-group>
+
+  </md-layout>
 
     <!-- Submit button. Note that its tied to createUser() function from addCtrl. Also note ng-disabled logic which prevents early submits.  -->
     <md-button type="submit" class="btn btn-danger btn-block" ng-click="answer($scope)" ng-disabled="addForm.$invalid">Report Sighting</md-button>
